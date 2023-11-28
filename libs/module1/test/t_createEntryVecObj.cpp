@@ -1,7 +1,6 @@
-#include <entry.h>
 #include <entryvec.h>
-#include <timedata.h>
 
 int main() {
+  EntryVec a;
   return 0;
 }
