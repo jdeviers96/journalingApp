@@ -1,9 +1,10 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.10 FATAL_ERROR)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.21 FATAL_ERROR)
 
 SET(CMAKE_CXX_STANDARD 14)
+set(CMAKE_POLICY_DEFAULT_CMP0126 ON) # Ensures cache variables (passed with -D) and normal variables interact correctly.
 
 PROJECT(journalingApp
-  VERSION 1.0.0
+  VERSION 0.0.1
   DESCRIPTION "A simple timecoded-note-taking app."
   LANGUAGES CXX
   )
