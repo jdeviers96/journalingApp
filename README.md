@@ -1,4 +1,4 @@
-#journalApp:
+#journalApp: 
 A simple journaling app for logging timecoded actions throughout the day.
 
   * Daily logs are grouped into logfiles abiding by the following naming format: dd-mm-yyyy_logfile.dat. 
