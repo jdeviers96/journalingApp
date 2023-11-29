@@ -1,13 +1,4 @@
 # Libraries definitions:
-ADD_LIBRARY(E
-  ${CMAKE_SOURCE_DIR}/libs/module1/src/entry.cpp
-  )
-
-ADD_LIBRARY(EEV
-  ${CMAKE_SOURCE_DIR}/libs/module1/src/entry.cpp
-  ${CMAKE_SOURCE_DIR}/libs/module1/src/entryvec.cpp
-  )
-
 ADD_LIBRARY(EEVTD
   ${CMAKE_SOURCE_DIR}/libs/module1/src/entry.cpp
   ${CMAKE_SOURCE_DIR}/libs/module1/src/entryvec.cpp
@@ -34,10 +25,10 @@ ADD_EXECUTABLE(t_createTimeDataObj
   
 
 # Tests executables linking:
-TARGET_LINK_LIBRARIES(t_loadLibs PRIVATE EEVTD)
-TARGET_LINK_LIBRARIES(t_createEntryObj PRIVATE E)
-TARGET_LINK_LIBRARIES(t_createEntryVecObj PRIVATE EEV)
-TARGET_LINK_LIBRARIES(t_createTimeDataObj PRIVATE EEVTD)
+TARGET_LINK_LIBRARIES(t_loadLibs          PUBLIC EEVTD)
+TARGET_LINK_LIBRARIES(t_createEntryObj    PUBLIC EEVTD)
+TARGET_LINK_LIBRARIES(t_createEntryVecObj PUBLIC EEVTD)
+TARGET_LINK_LIBRARIES(t_createTimeDataObj PUBLIC EEVTD)
 
 
 # Tests commands:

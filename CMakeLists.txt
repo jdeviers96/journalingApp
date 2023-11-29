@@ -15,12 +15,14 @@ SET(INCLPATH "${CMAKE_SOURCE_DIR}/libs/module1/include")
 SET(SRCSPATH "${CMAKE_SOURCE_DIR}/libs/module1/src")
 
 IF(NOT DEFINED LGF_PATH)
-  SET(LGF_PATH "/home/jean/.local/logs")
+  SET(LGF_PATH "/home/$ENV{USER}/.local/logs")
 ENDIF(NOT DEFINED LGF_PATH)
 
 # Whether set via -DLGF_PATH=... or the above IF(...) block:
 MESSAGE(STATUS "Logfiles stored in ${LGF_PATH}")
 
+SET(CMAKE_INSTALL_PREFIX "/home/$ENV{USER}/.local")  
+MESSAGE(STATUS "Installation path: ${CMAKE_INSTALL_PREFIX}/bin")
 
 # *.h.in contains the CMake variables to replace
 # (via preprocessor directive) inside globalVars.h
