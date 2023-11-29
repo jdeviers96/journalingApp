@@ -21,6 +21,7 @@ ENDIF(NOT DEFINED LGF_PATH)
 # Whether set via -DLGF_PATH=... or the above IF(...) block:
 MESSAGE(STATUS "Logfiles stored in ${LGF_PATH}")
 
+
 # *.h.in contains the CMake variables to replace
 # (via preprocessor directive) inside globalVars.h
 CONFIGURE_FILE(
