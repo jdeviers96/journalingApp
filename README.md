@@ -16,5 +16,5 @@ To add a new log, simply run journalApp "<Your message here...>".
   * Check whether inner, escaped double quotes in the input are allowed and correctly interpreted.
   * Add padding to the date and time format.
   * Allow to provide an installation path for the executable as well, and maybe the possibility to export its path.
-
+  * Environment variables are expanded in the entries; e.g writing $PATH expands it. Escaping the dollar sign works but it's still unwanted behaviour.
 
