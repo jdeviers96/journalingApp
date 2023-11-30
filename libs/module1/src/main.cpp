@@ -61,22 +61,34 @@ int main(int argc, char* argv[]) {
 
   fn = path + "/" + daydate + "_logfile.dat";
 
-  // (Create and) open logfile, READ mode:
+  // Create fstream, don't open file yet:
   std::fstream lgf;
-  lgf.open(fn, std::fstream::in);
 
-  // Check there is a message:
-  if (nomsg and (not reset)) {
+  // If --reset, open file in overwrite mode and write an empty entryvec:
+  if (reset) {
+    lgf.open(fn, std::fstream::out | std::fstream::trunc);
+    EntryVec ev;
+    lgf << ev;
+    lgf.close();
+    return 0;
+  } 
+
+  // If there is no message, open file in app mode to just touch it:
+  if (nomsg) {
+    lgf.open(fn, std::fstream::out | std::fstream::app);
     std::cout << "No log message provided; creating the logfile (if not existing already) and exiting." << "\n";
     lgf.close();
     return 0;
   }
 
+  // Otherwise, open file in read mode:
+  lgf.open(fn, std::fstream::in);
+
   // Read file into a vector of entries:
   EntryVec ev;
   lgf >> ev;
 
-  // Done reading from file: close it b/c can't both read and write from a file:
+  // Done reading from file: close it b/c can't both read from, and write to, a file:
   lgf.close();
   lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
 
@@ -85,11 +97,6 @@ int main(int argc, char* argv[]) {
   
   // Append entry to vector:
   ev.pushFileEntry(e);
-
-  // This occurs after file and entry reading, which is unnecessary overhead.
-  if (reset) {
-    ev.clear();
-  }
 
   // Save full entryvec to file, overwriting it:
   lgf << ev;  
