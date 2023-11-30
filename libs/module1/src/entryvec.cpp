@@ -26,6 +26,10 @@ int EntryVec::size() {
   return (this->entries).size();
 }
 
+// Overloaded clear() fct:
+void EntryVec::clear() {
+  (this->entries).clear();
+}
 
 std::ostream & operator<<(std::ostream &os, EntryVec &l) {
   for (int i=0; i<l.getFileEntries().size(); i++) {

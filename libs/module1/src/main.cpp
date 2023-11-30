@@ -11,14 +11,17 @@ namespace po = boost::program_options;
 
 int main(int argc, char* argv[]) {
 
+  // Options: associated flags and values:
   std::string msg;
   bool nomsg = false;
+  bool reset = false;
 
   // Boost command line parser:
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
-      ("-m", po::value<std::string>(), "Append an entry to the logfile");
+      ("-m", po::value<std::string>(), "Append an entry to the logfile")
+      ("reset", "Reset today's logfile");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -28,6 +31,11 @@ int main(int argc, char* argv[]) {
       msg = vm["-m"].as<std::string>();
     } else {
       nomsg = true;
+    }
+
+    if (vm.count("reset")) {
+      std::cout << "Resetting the logfile." << "\n";
+      reset = true;
     }
   }
 
@@ -40,14 +48,6 @@ int main(int argc, char* argv[]) {
     std::cerr << "Exception of unknown type!" << "\n";
     return 100;
   }
-  
-
-  /*
-  if (argc > 2) {
-    std::cout << "Too many arguments provided; exiting." << "\n";
-    return 100;
-  }
-  */
 
   // Get date and time:
   timeData t;
@@ -66,7 +66,7 @@ int main(int argc, char* argv[]) {
   lgf.open(fn, std::fstream::in);
 
   // Check there is a message:
-  if (nomsg) {
+  if (nomsg and (not reset)) {
     std::cout << "No log message provided; creating the logfile (if not existing already) and exiting." << "\n";
     lgf.close();
     return 0;
@@ -81,11 +81,15 @@ int main(int argc, char* argv[]) {
   lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
 
   // Create new entry:
-  //std::string msg = argv[1];
   Entry e(daytime,msg);
   
   // Append entry to vector:
   ev.pushFileEntry(e);
+
+  // This occurs after file and entry reading, which is unnecessary overhead.
+  if (reset) {
+    ev.clear();
+  }
 
   // Save full entryvec to file, overwriting it:
   lgf << ev;  

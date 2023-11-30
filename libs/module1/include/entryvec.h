@@ -33,8 +33,9 @@ class EntryVec {
     friend std::istream & operator>>(std::istream &is, EntryVec &l);
     friend std::fstream & operator>>(std::fstream &fs, EntryVec &l);
 
-    // Overloaded size() fct:
+    // Overloaded fcts:
     int size();
+    void clear();
 };
 
 #endif
