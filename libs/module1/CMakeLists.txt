@@ -5,6 +5,7 @@ ADD_EXECUTABLE(journalApp
   src/entry.cpp
   src/entryvec.cpp
   src/timedata.cpp
+  src/procedures.cpp
   src/main.cpp
   )
 

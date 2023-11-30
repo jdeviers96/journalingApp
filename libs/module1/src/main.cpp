@@ -2,6 +2,7 @@
 #include <entry.h>
 #include <entryvec.h>
 #include <timedata.h>
+#include <procedures.h>
 
 // Arguments are now caught using Boost
 #include <boost/program_options.hpp>
@@ -9,6 +10,7 @@
 
 namespace po = boost::program_options;
 
+/*
 void resetFile(std::string fn) {
   std::fstream lgf;
   lgf.open(fn, std::fstream::out | std::fstream::trunc);
@@ -33,12 +35,13 @@ EntryVec readFile(std::string fn) {
   return ev;
 }
 
-void writeFile(std::string fn, EntryVec ev) {
+void writeFile(std::string fn, EntryVec &ev) {
   std::fstream lgf;
   lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
   lgf << ev;
   lgf.close();
 }
+*/
 
 int main(int argc, char* argv[]) {
 
@@ -107,7 +110,6 @@ int main(int argc, char* argv[]) {
 
   // Read file into a vector of entries, then close it:
   EntryVec ev = readFile(fn);
-
 
   // Create new entry:
   Entry e(daytime,msg);
