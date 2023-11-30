@@ -9,6 +9,37 @@
 
 namespace po = boost::program_options;
 
+void resetFile(std::string fn) {
+  std::fstream lgf;
+  lgf.open(fn, std::fstream::out | std::fstream::trunc);
+  EntryVec ev;
+  lgf << ev;
+  lgf.close();
+}
+
+void touchFile(std::string fn) {
+  std::fstream lgf;
+  lgf.open(fn, std::fstream::out | std::fstream::app);
+  std::cout << "No log message provided; creating the logfile (if not existing already) and exiting." << "\n";
+  lgf.close();
+}
+
+EntryVec readFile(std::string fn) {
+  std::fstream lgf;
+  lgf.open(fn, std::fstream::in);
+  EntryVec ev;
+  lgf >> ev;
+  lgf.close();
+  return ev;
+}
+
+void writeFile(std::string fn, EntryVec ev) {
+  std::fstream lgf;
+  lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
+  lgf << ev;
+  lgf.close();
+}
+
 int main(int argc, char* argv[]) {
 
   // Options: associated flags and values:
@@ -61,36 +92,22 @@ int main(int argc, char* argv[]) {
 
   fn = path + "/" + daydate + "_logfile.dat";
 
-  // Create fstream, don't open file yet:
-  std::fstream lgf;
 
   // If --reset, open file in overwrite mode and write an empty entryvec:
   if (reset) {
-    lgf.open(fn, std::fstream::out | std::fstream::trunc);
-    EntryVec ev;
-    lgf << ev;
-    lgf.close();
-    return 0;
-  } 
-
-  // If there is no message, open file in app mode to just touch it:
-  if (nomsg) {
-    lgf.open(fn, std::fstream::out | std::fstream::app);
-    std::cout << "No log message provided; creating the logfile (if not existing already) and exiting." << "\n";
-    lgf.close();
+    resetFile(fn);
     return 0;
   }
 
-  // Otherwise, open file in read mode:
-  lgf.open(fn, std::fstream::in);
+  // If there is no message, open file in app mode to just touch it:
+  if (nomsg) {
+    touchFile(fn);
+    return 0;
+  }
 
-  // Read file into a vector of entries:
-  EntryVec ev;
-  lgf >> ev;
+  // Read file into a vector of entries, then close it:
+  EntryVec ev = readFile(fn);
 
-  // Done reading from file: close it b/c can't both read from, and write to, a file:
-  lgf.close();
-  lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
 
   // Create new entry:
   Entry e(daytime,msg);
@@ -98,11 +115,8 @@ int main(int argc, char* argv[]) {
   // Append entry to vector:
   ev.pushFileEntry(e);
 
-  // Save full entryvec to file, overwriting it:
-  lgf << ev;  
-
-  // Close logfile:
-  lgf.close();
+  // Write full EntryVec to file, close it.
+  writeFile(fn, ev);
 
   return 0;
 }
