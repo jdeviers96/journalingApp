@@ -10,52 +10,21 @@
 
 namespace po = boost::program_options;
 
-/*
-void resetFile(std::string fn) {
-  std::fstream lgf;
-  lgf.open(fn, std::fstream::out | std::fstream::trunc);
-  EntryVec ev;
-  lgf << ev;
-  lgf.close();
-}
-
-void touchFile(std::string fn) {
-  std::fstream lgf;
-  lgf.open(fn, std::fstream::out | std::fstream::app);
-  std::cout << "No log message provided; creating the logfile (if not existing already) and exiting." << "\n";
-  lgf.close();
-}
-
-EntryVec readFile(std::string fn) {
-  std::fstream lgf;
-  lgf.open(fn, std::fstream::in);
-  EntryVec ev;
-  lgf >> ev;
-  lgf.close();
-  return ev;
-}
-
-void writeFile(std::string fn, EntryVec &ev) {
-  std::fstream lgf;
-  lgf.open(fn, std::fstream::out | std::fstream::trunc); // Reopen, in overwrite mode
-  lgf << ev;
-  lgf.close();
-}
-*/
-
 int main(int argc, char* argv[]) {
 
   // Options: associated flags and values:
   std::string msg;
   bool nomsg = false;
   bool reset = false;
+  bool show  = false;
 
   // Boost command line parser:
   try {
     po::options_description desc("Allowed options");
     desc.add_options()
       ("-m", po::value<std::string>(), "Append an entry to the logfile")
-      ("reset", "Reset today's logfile");
+      ("reset", "Reset today's logfile")
+      ("show", "Print logfile to screen");
 
     po::variables_map vm;
     po::store(po::parse_command_line(argc, argv, desc), vm);
@@ -70,6 +39,10 @@ int main(int argc, char* argv[]) {
     if (vm.count("reset")) {
       std::cout << "Resetting the logfile." << "\n";
       reset = true;
+    }
+
+    if (vm.count("show")) {
+      show = true;
     }
   }
 
@@ -103,7 +76,7 @@ int main(int argc, char* argv[]) {
   }
 
   // If there is no message, open file in app mode to just touch it:
-  if (nomsg) {
+  if (nomsg and not show) {
     touchFile(fn);
     return 0;
   }
@@ -111,11 +84,22 @@ int main(int argc, char* argv[]) {
   // Read file into a vector of entries, then close it:
   EntryVec ev = readFile(fn);
 
+  // If --show but no message, print and exit:
+  if (show and nomsg) {
+    std::cout << ev;
+    return 0;
+  }
+
   // Create new entry:
   Entry e(daytime,msg);
   
   // Append entry to vector:
   ev.pushFileEntry(e);
+
+  // "and not nomsg" is superfluous and here only for clarity
+  if (show and not nomsg) {
+    std::cout << ev;
+  }
 
   // Write full EntryVec to file, close it.
   writeFile(fn, ev);
